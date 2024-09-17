@@ -16,7 +16,10 @@ find_package(GLUT REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR} ${GLUT_INCLUDE_DIR})
 
 # Arquivos fontes
-set(SOURCE_FILES src/main.cpp)
+set(SOURCE_FILES src/main.cpp src/Flowers/Flower.cpp src/Flowers/Seeder.cpp 
+src/Flowers/FlowerTypes/Sunflower.cpp src/Flowers/FlowerTypes/Daisy.cpp 
+src/Flowers/FlowerTypes/Rose.cpp
+)
 
 # Define o diretório alvo do programa
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/target)
