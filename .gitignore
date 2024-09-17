@@ -1,0 +1,8 @@
+/.ccls-cache
+/main
+/*.o
+cmake_install.cmake
+CMakeFiles
+Makefile
+CMakeCache.txt
+/target
