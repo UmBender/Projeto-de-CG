@@ -18,7 +18,7 @@ include_directories(${OPENGL_INCLUDE_DIR} ${GLUT_INCLUDE_DIR})
 # Arquivos fontes
 set(SOURCE_FILES src/main.cpp src/Flowers/Flower.cpp src/Flowers/Seeder.cpp 
 src/Flowers/FlowerTypes/Sunflower.cpp src/Flowers/FlowerTypes/Daisy.cpp 
-src/Flowers/FlowerTypes/Rose.cpp
+src/Flowers/FlowerTypes/Rose.cpp src/Helpers/MathCalculus.cpp
 )
 
 # Define o diretório alvo do programa

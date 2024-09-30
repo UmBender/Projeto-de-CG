@@ -12,4 +12,4 @@ make
 ./target/ProjetoCG1
 
 # Limpa arquivos gerados pelo cmake e make
-# rm -rf cmake_install.cmake CMakeFiles/ CMakeCache.txt Makefile target
+rm -rf cmake_install.cmake CMakeFiles/ CMakeCache.txt Makefile target

@@ -6,6 +6,12 @@
 #include <iostream>
 #include <vector>
 
+class Camera {
+private:
+protected:
+public:
+};
+
 GLfloat angle, fAspect, largura, altura;
 GLfloat xcamera = 0, ycamera = 0, zcamera = 300;
 GLfloat xtarget = 0, ytarget = 0, ztarget = 0;
@@ -45,8 +51,8 @@ void Inicializa(void) {
 
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
   glShadeModel(GL_SMOOTH); // modelo de GOURAUD: a cor de cada ponto da
-                           // primitiva é interpolada a partir dos vértices
-  // glShadeModel(GL_FLAT);  // a cor de cada primitiva é única em todos os
+  // primitiva é interpolada a partir dos vértices
+  // glShadeModel(GL_FLAT); // a cor de cada primitiva é única em todos os
   // pontos
 
   // Define a refletância do material
