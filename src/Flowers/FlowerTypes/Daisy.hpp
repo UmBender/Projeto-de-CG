@@ -15,11 +15,11 @@ public:
   void draw_flower();
 
 private:
-  void draw_petal(float angle, float dist, float height);
-  void draw_flower_core(float dist, float height);
-  void draw_stem(float height);
+  void draw_petal(GLfloat angle, GLfloat dist, GLfloat height);
+  void draw_flower_core(GLfloat dist, GLfloat height);
+  void draw_stem();
   void draw_leaf();
-  float deg_to_rad(float deg);
+  float deg_to_rad(GLfloat deg);
   std::array<GLfloat, 4> Bx;
   std::array<GLfloat, 4> By;
   std::array<GLfloat, 4> Bz;

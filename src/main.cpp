@@ -1,28 +1,28 @@
 #include "Flowers/Flower.hpp"
 #include "Flowers/Seeder.hpp"
+#include "World/Camera.hpp"
+#include "World/Controllers.hpp"
+#include "World/World.hpp"
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <cmath>
 #include <iostream>
 #include <vector>
 
-class Camera {
-private:
-protected:
-public:
-};
-
 GLfloat angle, fAspect, largura, altura;
 GLfloat xcamera = 0, ycamera = 0, zcamera = 300;
 GLfloat xtarget = 0, ytarget = 0, ztarget = 0;
 GLfloat look_angle = 0;
 GLfloat xvector = 0, yvector = 1.0, zvector = 0;
+World world;
 std::vector<Flower *> flowers;
 
 void Desenha(void) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glViewport(0, 0, largura, altura);
+  world.draw_floor();
+  world.draw_sky();
 
   for (Flower *i : flowers) {
     i->draw_flower();
@@ -113,9 +113,14 @@ void EspecificaParametrosVisualizacao(void) {
   set_look_angle();
 
   // Especifica posição do observador e do alvo
-  gluLookAt(sed->get_x(), sed->get_y(), sed->get_z(), // posição da câmera
-            xtarget, ytarget, ztarget,                // posição do alvo
-            xvector, yvector, zvector);               // vetor UP da câmera
+  gluLookAt(sed->get_x(), sed->get_y(),
+            sed->get_z(), // posição da câmera
+            // sed->get_x_target(), sed->get_y_target(), sed->get_z_target(),
+            xtarget, ytarget, ztarget,  // posição do alvo
+            xvector, yvector, zvector); // vetor UP da câmera
+                                        //
+  std::cerr << "X: " << sed->get_x_target() << " Y: " << sed->get_y_target()
+            << " Z: " << sed->get_z_target() << std::endl;
 }
 
 // Função callback chamada quando o tamanho da janela é alterado
@@ -141,8 +146,7 @@ void GerenciaMouse(int button, int state, int x, int y) {
       ycamera += 10;
     }
   if (button == GLUT_RIGHT_BUTTON)
-    if (state == GLUT_DOWN) { // Zoom-out
-                              // if (angle <= 130) angle += 5;
+    if (state == GLUT_DOWN) { // Zoom-out if (angle <= 130) angle += 5;
       ycamera -= 10;
     }
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // aplica o zBuffer
@@ -153,20 +157,25 @@ void GerenciaMouse(int button, int state, int x, int y) {
 void TeclasEspeciais(int key, int x, int y) {
   Seeder *sed = Seeder::GetInstance();
   if (key == GLUT_KEY_UP) {
+    // sed->move_front();
+
     sed->move_z(-10);
     ztarget -= 10;
   }
   if (key == GLUT_KEY_DOWN) {
+    // sed->move_back();
     sed->move_z(10);
     ztarget += 10;
   }
   if (key == GLUT_KEY_RIGHT) {
-    sed->move_x(10);
-    xtarget += 10;
+    // sed->rotate_reverse_clockwise();
+    //  sed->move_x(10);
+    // xtarget += 10;
   }
   if (key == GLUT_KEY_LEFT) {
-    sed->move_x(-10);
-    xtarget -= 10;
+    // sed->rotate_clockwise();
+    //    sed->move_x(-10);
+    // xtarget -= 10;
   }
   EspecificaParametrosVisualizacao();
   glutPostRedisplay();
@@ -206,11 +215,12 @@ int main(int argc, char **argv) {
                                    // para renderização e outro para exibição
 
   glutInitWindowPosition(100, 50);
-  largura = 1720;
-  altura = 980;
+  largura = 1720 / 2;
+  altura = 980 / 2;
   glutInitWindowSize(largura, altura);
   fAspect = (GLfloat)largura / (GLfloat)altura;
   glutCreateWindow("Aula Pratica 4");
+  world = World();
 
   glutDisplayFunc(Desenha);
   glutReshapeFunc(AlteraTamanhoJanela); // Função para ajustar o tamanho da tela
