@@ -19,7 +19,7 @@ include_directories(${OPENGL_INCLUDE_DIR} ${GLUT_INCLUDE_DIR})
 set(SOURCE_FILES src/main.cpp src/Flowers/Flower.cpp src/Flowers/Seeder.cpp 
 src/Flowers/FlowerTypes/Sunflower.cpp src/Flowers/FlowerTypes/Daisy.cpp 
 src/Flowers/FlowerTypes/Rose.cpp src/Helpers/MathCalculus.cpp src/World/World.cpp
-src/World/Controllers.cpp src/World/Camera.cpp 
+src/World/Controller.cpp src/World/Camera.cpp 
 )
 
 # Define o diretório alvo do programa

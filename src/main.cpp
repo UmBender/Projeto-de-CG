@@ -1,7 +1,7 @@
 #include "Flowers/Flower.hpp"
 #include "Flowers/Seeder.hpp"
 #include "World/Camera.hpp"
-#include "World/Controllers.hpp"
+#include "World/Controller.hpp"
 #include "World/World.hpp"
 #include <GL/gl.h>
 #include <GL/glut.h>
@@ -10,11 +10,14 @@
 #include <vector>
 
 GLfloat angle, fAspect, largura, altura;
-GLfloat xcamera = 0, ycamera = 0, zcamera = 300;
-GLfloat xtarget = 0, ytarget = 0, ztarget = 0;
 GLfloat look_angle = 0;
 GLfloat xvector = 0, yvector = 1.0, zvector = 0;
+
 World world;
+Controller controller;
+Camera camera;
+Seeder seeder;
+
 std::vector<Flower *> flowers;
 
 void Desenha(void) {
@@ -87,40 +90,27 @@ void Inicializa(void) {
   glEnable(GL_DEPTH_TEST);                            // ativa o zBuffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // aplica o zBuffer
 
-  angle = 45;
-}
-
-void set_look_angle() {
-  xvector = std::sin(look_angle);
-  yvector = std::cos(look_angle);
+  angle = 90;
 }
 
 // Função usada para especificar o volume de visualização
 void EspecificaParametrosVisualizacao(void) {
-  Seeder *sed = Seeder::GetInstance();
   // Especifica sistema de coordenadas de projeção
   glMatrixMode(GL_PROJECTION);
   // Inicializa sistema de coordenadas de projeção
   glLoadIdentity();
   // Especifica a projeção perspectiva
-  gluPerspective(angle, fAspect, 0.1, 1000);
+  gluPerspective(angle, fAspect, 0.1, sqrt(2.5) * 8000);
 
   // Especifica sistema de coordenadas do modelo
   glMatrixMode(GL_MODELVIEW);
   // Inicializa sistema de coordenadas do modelo
   glLoadIdentity();
 
-  set_look_angle();
-
   // Especifica posição do observador e do alvo
-  gluLookAt(sed->get_x(), sed->get_y(),
-            sed->get_z(), // posição da câmera
-            // sed->get_x_target(), sed->get_y_target(), sed->get_z_target(),
-            xtarget, ytarget, ztarget,  // posição do alvo
-            xvector, yvector, zvector); // vetor UP da câmera
-                                        //
-  std::cerr << "X: " << sed->get_x_target() << " Y: " << sed->get_y_target()
-            << " Z: " << sed->get_z_target() << std::endl;
+  gluLookAt(camera.get_xcamera(), camera.get_ycamera(), camera.get_zcamera(),
+            camera.get_xtarget(), camera.get_ytarget(), camera.get_ztarget(),
+            camera.get_xvector(), camera.get_yvector(), camera.get_zvector());
 }
 
 // Função callback chamada quando o tamanho da janela é alterado
@@ -140,67 +130,41 @@ void AlteraTamanhoJanela(GLint largura, GLint altura) {
 
 // Função callback chamada para gerenciar eventos do mouse
 void GerenciaMouse(int button, int state, int x, int y) {
-  if (button == GLUT_LEFT_BUTTON)
-    if (state == GLUT_DOWN) { // Zoom-in
-                              // if (angle >= 10) angle -= 5;
-      ycamera += 10;
-    }
-  if (button == GLUT_RIGHT_BUTTON)
-    if (state == GLUT_DOWN) { // Zoom-out if (angle <= 130) angle += 5;
-      ycamera -= 10;
-    }
+  // if (button == GLUT_LEFT_BUTTON)
+  //   if (state == GLUT_DOWN) { // Zoom-in
+  //                             // if (angle >= 10) angle -= 5;
+  //     ycamera += 10; }
+  // if (button == GLUT_RIGHT_BUTTON)
+  //   if (state == GLUT_DOWN) { // Zoom-out if (angle <= 130) angle += 5;
+  //     ycamera -= 10;
+  //   }
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // aplica o zBuffer
   EspecificaParametrosVisualizacao();
   glutPostRedisplay();
 }
 
 void TeclasEspeciais(int key, int x, int y) {
-  Seeder *sed = Seeder::GetInstance();
   if (key == GLUT_KEY_UP) {
-    // sed->move_front();
 
-    sed->move_z(-10);
-    ztarget -= 10;
+    camera.move_front();
   }
   if (key == GLUT_KEY_DOWN) {
-    // sed->move_back();
-    sed->move_z(10);
-    ztarget += 10;
+    camera.move_back();
   }
   if (key == GLUT_KEY_RIGHT) {
-    // sed->rotate_reverse_clockwise();
-    //  sed->move_x(10);
-    // xtarget += 10;
+    camera.rotate_rigth();
   }
   if (key == GLUT_KEY_LEFT) {
-    // sed->rotate_clockwise();
-    //    sed->move_x(-10);
-    // xtarget -= 10;
+    camera.rotate_left();
   }
   EspecificaParametrosVisualizacao();
   glutPostRedisplay();
 }
 
 void GerenciaTeclado(unsigned char key, int x, int y) {
-  Seeder *sed = Seeder::GetInstance();
   switch (key) {
-  case ' ': // restaura posição inicial da camera
-    // xcamera = 0, ycamera = 0, zcamera = 300;
-    // xtarget = 0, ytarget = 0, ztarget = 0;
-    // look_angle = 0;
-    // xvector = 0, yvector = 1.0, zvector = 0;
-    flowers.push_back(sed->generate_flower());
-    break;
-  // movimentacao do observador
-  case 'd':
-    break;
-  case 'a':
-    break;
-  case 'q':
-    look_angle += 0.3;
-    break;
-  case 'e':
-    look_angle -= 0.3;
+  case ' ':
+    flowers.push_back(seeder.generate_flower());
     break;
   }
   EspecificaParametrosVisualizacao();
@@ -208,6 +172,10 @@ void GerenciaTeclado(unsigned char key, int x, int y) {
 }
 
 int main(int argc, char **argv) {
+  camera = Camera();
+  seeder = Seeder(&camera);
+  world = World();
+
   glutInit(&argc, argv);
 
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB |
@@ -215,12 +183,11 @@ int main(int argc, char **argv) {
                                    // para renderização e outro para exibição
 
   glutInitWindowPosition(100, 50);
-  largura = 1720 / 2;
-  altura = 980 / 2;
+  largura = 1720;
+  altura = 980;
   glutInitWindowSize(largura, altura);
   fAspect = (GLfloat)largura / (GLfloat)altura;
   glutCreateWindow("Aula Pratica 4");
-  world = World();
 
   glutDisplayFunc(Desenha);
   glutReshapeFunc(AlteraTamanhoJanela); // Função para ajustar o tamanho da tela
@@ -228,7 +195,7 @@ int main(int argc, char **argv) {
   glutKeyboardFunc(GerenciaTeclado); // Define qual funcao gerencia o
   // comportamento do teclado
   glutSpecialFunc(TeclasEspeciais); // Define qual
-  // funcao gerencia as teclas especiais
+                                    // funcao gerencia as teclas especiais
   Inicializa();
   glutMainLoop();
 }
