@@ -20,7 +20,7 @@ private:
 protected:
 public:
   Seeder();
-  Seeder(Camera *camera);
+  Seeder(Camera *ref_camera);
   Flower *generate_flower();
   std::size_t get_number_flower();
 };

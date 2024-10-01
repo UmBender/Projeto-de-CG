@@ -1,6 +1,6 @@
 #include "Camera.hpp"
 Camera::Camera()
-    : xcamera(0.0f), ycamera(50.0f), zcamera(300.0f), xtarget(0.0f),
+    : xcamera(0.0f), ycamera(100.0f), zcamera(300.0f), xtarget(0.0f),
       ytarget(0.0f), ztarget(0.0f), xvector(0.0f), yvector(1.0f),
       zvector(0.0f) {}
 Camera::Camera(GLfloat xcamera, GLfloat ycamera, GLfloat zcamera,
@@ -36,3 +36,5 @@ void Camera::move_back() {
 }
 void Camera::rotate_rigth() { angle -= 5; }
 void Camera::rotate_left() { angle += 5; }
+void Camera::look_up() { ytarget += 10; }
+void Camera::look_down() { ytarget -= 10; }

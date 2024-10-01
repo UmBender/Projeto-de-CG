@@ -33,4 +33,6 @@ public:
   void move_back();
   void rotate_rigth();
   void rotate_left();
+  void look_up();
+  void look_down();
 };

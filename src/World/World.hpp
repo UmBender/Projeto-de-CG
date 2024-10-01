@@ -1,6 +1,7 @@
 #pragma once
 #include <GL/gl.h>
 #include <GL/glut.h>
+#include <cmath>
 #include <iostream>
 
 class World {
@@ -19,4 +20,5 @@ public:
   World();
   void draw_sky();
   void draw_floor();
+  void draw_sun();
 };

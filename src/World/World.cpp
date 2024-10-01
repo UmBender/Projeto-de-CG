@@ -1,4 +1,5 @@
 #include "World.hpp"
+#include <GL/gl.h>
 
 World::World(GLfloat x_min, GLfloat x_max, GLfloat y_min, GLfloat y_max,
              GLfloat z_min, GLfloat z_max)
@@ -65,5 +66,16 @@ void World::draw_floor() {
   glVertex3f(x_ground_max, 0, z_ground_min);
   glVertex3f(x_ground_min, 0, z_ground_min);
   glVertex3f(x_ground_min, 0, z_ground_max);
+  glEnd();
+}
+
+void World::draw_sun() {
+  glBegin(GL_TRIANGLE_FAN);
+  glColor3f(1.0, 1.0, 1.0);
+  glVertex3f(0, y_ground_max - 20, 0);
+  for (float i{0.0f}; i <= 360.0f; i += 5.625f) {
+    glVertex3f(400.0f * sin((i / 360.0f) * (M_PI * 2)), y_ground_max - 20,
+               400.0f * cos((i / 360.0f) * (M_PI * 2)));
+  }
   glEnd();
 }

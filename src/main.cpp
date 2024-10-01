@@ -10,14 +10,12 @@
 #include <vector>
 
 GLfloat angle, fAspect, largura, altura;
-GLfloat look_angle = 0;
-GLfloat xvector = 0, yvector = 1.0, zvector = 0;
+GLfloat look_angle = 90;
 
 World world;
 Controller controller;
 Camera camera;
 Seeder seeder;
-
 std::vector<Flower *> flowers;
 
 void Desenha(void) {
@@ -26,6 +24,7 @@ void Desenha(void) {
   glViewport(0, 0, largura, altura);
   world.draw_floor();
   world.draw_sky();
+  world.draw_sun();
 
   for (Flower *i : flowers) {
     i->draw_flower();
@@ -129,21 +128,21 @@ void AlteraTamanhoJanela(GLint largura, GLint altura) {
 }
 
 // Função callback chamada para gerenciar eventos do mouse
-void GerenciaMouse(int button, int state, int x, int y) {
-  // if (button == GLUT_LEFT_BUTTON)
-  //   if (state == GLUT_DOWN) { // Zoom-in
-  //                             // if (angle >= 10) angle -= 5;
-  //     ycamera += 10; }
-  // if (button == GLUT_RIGHT_BUTTON)
-  //   if (state == GLUT_DOWN) { // Zoom-out if (angle <= 130) angle += 5;
-  //     ycamera -= 10;
-  //   }
+void GerenciaMouse(int button, int state, int, int) {
+  if (button == GLUT_LEFT_BUTTON)
+    if (state == GLUT_DOWN) {
+      camera.look_up();
+    }
+  if (button == GLUT_RIGHT_BUTTON)
+    if (state == GLUT_DOWN) {
+      camera.look_down();
+    }
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // aplica o zBuffer
   EspecificaParametrosVisualizacao();
   glutPostRedisplay();
 }
 
-void TeclasEspeciais(int key, int x, int y) {
+void TeclasEspeciais(int key, int, int) {
   if (key == GLUT_KEY_UP) {
 
     camera.move_front();
@@ -161,7 +160,7 @@ void TeclasEspeciais(int key, int x, int y) {
   glutPostRedisplay();
 }
 
-void GerenciaTeclado(unsigned char key, int x, int y) {
+void GerenciaTeclado(unsigned char key, int, int) {
   switch (key) {
   case ' ':
     flowers.push_back(seeder.generate_flower());
@@ -187,7 +186,7 @@ int main(int argc, char **argv) {
   altura = 980;
   glutInitWindowSize(largura, altura);
   fAspect = (GLfloat)largura / (GLfloat)altura;
-  glutCreateWindow("Aula Pratica 4");
+  glutCreateWindow("Projeto Jardim");
 
   glutDisplayFunc(Desenha);
   glutReshapeFunc(AlteraTamanhoJanela); // Função para ajustar o tamanho da tela
