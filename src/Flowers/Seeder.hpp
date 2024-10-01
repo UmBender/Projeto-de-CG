@@ -1,4 +1,5 @@
 #pragma once
+#include "../World/Camera.hpp"
 #include "Flower.hpp"
 #include "FlowerTypes/Daisy.hpp"
 #include "FlowerTypes/Rose.hpp"
@@ -14,22 +15,12 @@ private:
   std::size_t number_flowers;
   std::map<std::string, std::size_t> flowers_distribution;
   std::mt19937 random_generator;
-  GLfloat x_position, y_position, z_position;
+  Camera *camera;
 
 protected:
-  static Seeder *seeder_;
-  Seeder();
-
 public:
-  Seeder(Seeder &other) = delete;
-  void operator=(const Seeder &) = delete;
-  static Seeder *GetInstance();
+  Seeder();
+  Seeder(Camera *ref_camera);
   Flower *generate_flower();
   std::size_t get_number_flower();
-  void move_x(GLfloat dx);
-  void move_y(GLfloat dy);
-  void move_z(GLfloat dz);
-  GLfloat get_x();
-  GLfloat get_y();
-  GLfloat get_z();
 };

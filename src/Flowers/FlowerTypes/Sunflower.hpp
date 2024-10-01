@@ -1,7 +1,9 @@
 #pragma once
+#include "../../Helpers/MathCalculus.hpp"
 #include "../Flower.hpp"
 #include <GL/gl.h>
 #include <GL/glut.h>
+#include <cmath>
 #include <iostream>
 
 class Sunflower : public Flower {
