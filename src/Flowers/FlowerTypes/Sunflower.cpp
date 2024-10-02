@@ -1,91 +1,106 @@
 #include "Sunflower.hpp"
-Sunflower::Sunflower() : Flower() {}
-Sunflower::Sunflower(GLfloat x, GLfloat y, GLfloat z) : Flower(x, y, z) {}
+#include <GL/gl.h>
+
+Sunflower::Sunflower() : Flower() {
+  Bx = {0, 2.0f, 0, -4.0f};
+  By = {0, 0 + 3.3f, 0 + 6.7f, 10.0f};
+  Bz = {0, 0, 0, 0};
+}
+Sunflower::Sunflower(GLfloat x, GLfloat y, GLfloat z, GLfloat height)
+    : Flower(x, y, z), height(height) {
+  Bx = {0, randf(-5.0f, 5.0f), randf(-5.0f, 5.0f), 0};
+  By = {0, height / 3.0f, 2.0f * height / 3.0f, height};
+  Bz = {0, randf(-5.0f, 5.0f), randf(-5.0f, 5.0f), 0};
+}
 Sunflower::~Sunflower() {}
-
 void Sunflower::draw_flower() {
-  GLfloat Px, Py, Pz;
+  float n{360.0f};
+  float radius{7.0f};
+  for (float i{0}; i < n; i += 10) {
+    draw_petal(i, radius, height);
+  }
+  draw_flower_core(radius, height);
+  draw_stem();
+}
 
-  // Pontos de controle
-  GLfloat *Bx = calculate_sunflower_stem_coords('x', root_x_position);
-  GLfloat *By = calculate_sunflower_stem_coords('y', root_y_position);
-  GLfloat *Bz = calculate_sunflower_stem_coords('z', root_z_position);
+void Sunflower::draw_petal(GLfloat angle, GLfloat dist, GLfloat height) {
+  glPushMatrix();
+  // Coloca a flor no local correto
+  glTranslated(root_x_position, root_y_position, root_z_position);
+  // Coloca a petala na posicao correta em volta da flor
+  glTranslated(dist * cos(deg_to_rad(angle)), height,
+               -dist * sin(deg_to_rad(angle)));
+  // Rotaciona para ficar ortogonal em relacao ao centro
+  glRotated(angle, 0.0, 0.0, -1.0);
+  glRotated(90.0f, 1.0, 0.0, 0.0);
+  {
+    glBegin(GL_POLYGON);
+    glColor3f(1.0f, 1.0f, 0.0f);
+      glVertex3f(0.0f, 0.0f, 2.0f);
+      glVertex3f(10.0f, 0.0f, 4.0f);
+      glVertex3f(15.0f, 0.0f, 0.0f);
+      glVertex3f(10.0f, 0.0f, -4.0f);
+      glVertex3f(0.0f, 0.0f, -2.0f);
+    glEnd();
+  }
+  glPopMatrix();
+}
+void Sunflower::draw_flower_core(GLfloat dist, GLfloat height) {
+  glPushMatrix();
+  // Coloca o centro da flor no centro da flor
+  glTranslated(root_x_position, root_y_position, root_z_position);
+  // Coloca na posicao adequada acima do caule
+  glTranslated(0.0f, height, 0.0f);
+  // Pinta o centro de marrom
+  glColor3f(0.59f, 0.29f, 0.0f);
+  // Aqui desenha um circula com o centro um pouco elevado
+  glRotated(50.0f, 1.0, 0.0, 0.0);
+  int parts{50};
+  for (int i{0}; i < parts; i++) {
+    glBegin(GL_POLYGON);
+    glVertex3f(0.0f, 0.0f, -2.0f);
+    glVertex3f((dist + 0.5f) * cos(deg_to_rad(i * 360.0f / parts)),
+               (dist + 0.5f) * sin(deg_to_rad(i * 360.0f / parts)),
+                0.04);
+    glVertex3f((dist + 0.5f) * cos(deg_to_rad((i + 1) * 360.0f / parts)),
+               (dist + 0.5f) * sin(deg_to_rad((i + 1) * 360.0f / parts)),
+                0.0f);
+    glEnd();
+  }
+  glPopMatrix();
+}
+void Sunflower::draw_stem() {
+  glPushMatrix();
+  glTranslatef(root_x_position, root_y_position, root_z_position);
+  for (float t{0.02f}; t <= 1.0f; t += 0.02f) {
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glBegin(GL_QUAD_STRIP);
+    // Pontos de cima
+    GLfloat px = calculate_point(Bx, t);
+    GLfloat py = calculate_point(By, t);
+    GLfloat pz = calculate_point(Bz, t);
+    // Pontos de baixo
+    GLfloat px_old = calculate_point(Bx, t - 0.02f);
+    GLfloat py_old = calculate_point(By, t - 0.02f);
+    GLfloat pz_old = calculate_point(Bz, t - 0.02f);
 
-  GLfloat stem_radius = 0.2f;
-  glColor3f(0.03f, 0.28f, 0.13f);
-
-  glBegin(GL_QUAD_STRIP);
-  for (GLdouble t = 0; t <= 1.0; t += 0.1) {
-    Px = calculaPonto('x', t, Bx, By, Bz);
-    Py = calculaPonto('y', t, Bx, By, Bz);
-    Pz = calculaPonto('z', t, Bx, By, Bz);
-
-    GLfloat offset_x = stem_radius * sin(t * 10.0);
-    GLfloat offset_z = stem_radius * cos(t * 10.0);
-
-    glVertex3f(Px + offset_x, Py, Pz + offset_z);
-    glVertex3f(Px - offset_x, Py, Pz - offset_z);
+    // Desenha a caula de forma circular
+    for (float i{0.0f}; i <= 360.0f; i += 22.5f) {
+      // Define os pontos de cima
+      glVertex3f(px + cos(deg_to_rad(i)), py, pz + sin(deg_to_rad(i)));
+      // Define os pontos de baixo
+      glVertex3f(px_old + cos(deg_to_rad(i)), py_old,
+                 pz_old + sin(deg_to_rad(i)));
+    }
+    glEnd();
+  }
+  // Desenha terra de baixo da flor
+  glBegin(GL_TRIANGLE_FAN);
+  glColor3f(88.0 / 128.0, 57.0 / 128.0, 39.0 / 128.0);
+  glVertex3f(0.0f, 2.0f, 0.0f);
+  for (GLfloat i{0.0f}; i <= 360.0f; i += 11.25f) {
+    glVertex3f(10.0f * sin(deg_to_rad(i)), -1.0f, 10.0f * cos(deg_to_rad(i)));
   }
   glEnd();
-
-  // Desenha a flor
-  glColor3f(0.47f, 0.25f, 0.03f);
-  glPushMatrix();
-  // Centro da flor
-  Px = calculaPonto('x', 1.0, Bx, By, Bz);
-  Py = calculaPonto('y', 1.0, Bx, By, Bz);
-  Pz = calculaPonto('z', 1.0, Bx, By, Bz);
-  glTranslated(Px, Py, Pz);
-  glutSolidSphere(2.0, 20, 20);
   glPopMatrix();
-
-  // Desenha o vaso
-  glColor3f(0.75f, 0.0f, 0.3f);
-  glPushMatrix();
-  glTranslated(root_x_position, root_y_position, root_z_position);
-  glBegin(GL_QUADS);
-  // Base
-  glNormal3f(0.0f, 1.0f, 0.0f);
-  glVertex3f(-5.0, 0.0, -5.0);
-  glVertex3f(-5.0, 0.0, 5.0);
-  glVertex3f(5.0, 0.0, 5.0);
-  glVertex3f(5.0, 0.0, -5.0);
-  // Lados
-  glNormal3f(-1.0f, 0.0f, 0.0f);
-  glVertex3f(-5.0, 0.0, -5.0);
-  glVertex3f(-5.0, 5.0, -5.0);
-  glVertex3f(-5.0, 5.0, 5.0);
-  glVertex3f(-5.0, 0.0, 5.0);
-
-  glNormal3f(-1.0f, 0.0f, 0.0f);
-  glVertex3f(-5.0, 0.0, 5.0);
-  glVertex3f(-5.0, 5.0, 5.0);
-  glVertex3f(5.0, 5.0, 5.0);
-  glVertex3f(5.0, 0.0, 5.0);
-
-  glNormal3f(1.0f, 0.0f, 0.0f);
-  glVertex3f(5.0, 0.0, 5.0);
-  glVertex3f(5.0, 5.0, 5.0);
-  glVertex3f(5.0, 5.0, -5.0);
-  glVertex3f(5.0, 0.0, -5.0);
-
-  glNormal3f(0.0f, 0.0f, -1.0f);
-  glVertex3f(5.0, 0.0, -5.0);
-  glVertex3f(5.0, 5.0, -5.0);
-  glVertex3f(-5.0, 5.0, -5.0);
-  glVertex3f(-5.0, 0.0, -5.0);
-
-  // Topo
-  glColor3f(0.5f, 0.35f, 0.05f);
-  glNormal3f(0.0f, -1.0f, 0.0f);
-  glVertex3f(-5.0, 4.0, -5.0);
-  glVertex3f(-5.0, 4.0, 5.0);
-  glVertex3f(5.0, 4.0, 5.0);
-  glVertex3f(5.0, 4.0, -5.0);
-  glEnd();
-  glPopMatrix();
-
-  delete[] Bx;
-  delete[] By;
-  delete[] Bz;
 }
