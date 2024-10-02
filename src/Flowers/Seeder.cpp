@@ -17,7 +17,8 @@ Flower *Seeder::generate_flower() {
     break;
   case 2:
     flowers_distribution["Sunflower"]++;
-    return new Sunflower(camera->get_xcamera(), 0.0F, camera->get_zcamera());
+    return new Sunflower(camera->get_xcamera(), 0.0F, camera->get_zcamera(),
+                    Flower::randf(15.0f, 100.0f));
     break;
   case 3:
     flowers_distribution["Rose"]++;
