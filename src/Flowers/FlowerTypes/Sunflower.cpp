@@ -30,7 +30,7 @@ void Sunflower::draw_petal(GLfloat angle, GLfloat dist, GLfloat height) {
   // Coloca a petala na posicao correta em volta da flor
   glTranslated(dist * cos(deg_to_rad(angle)), height,
                -dist * sin(deg_to_rad(angle)));
-  // Rotaciona para ficar ortogonal em relacao ao centro
+  // Rotaciona para ficar vertical e coerente com o centro
   glRotated(angle, 0.0, 0.0, -1.0);
   glRotated(90.0f, 1.0, 0.0, 0.0);
   {
