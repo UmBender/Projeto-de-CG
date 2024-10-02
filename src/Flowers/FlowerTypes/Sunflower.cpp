@@ -14,7 +14,6 @@ Sunflower::Sunflower(GLfloat x, GLfloat y, GLfloat z, GLfloat height)
 }
 Sunflower::~Sunflower() {}
 void Sunflower::draw_flower() {
-<<<<<<< HEAD
   float n{360.0f};
   float radius{7.0f};
   for (float i{0}; i < n; i += 10) {
@@ -23,13 +22,6 @@ void Sunflower::draw_flower() {
   draw_flower_core(radius, height);
   draw_stem();
 }
-=======
-  glEnable(GL_COLOR_MATERIAL);
-  glEnable(GL_COLOR_MATERIAL_FACE);
-
-  GLfloat Px, Py, Pz;
->>>>>>> 993bfa0 (feat: versao final com iluminacao, passaro animado e movimentacao)
-
 void Sunflower::draw_petal(GLfloat angle, GLfloat dist, GLfloat height) {
   glPushMatrix();
   // Coloca a flor no local correto
@@ -43,11 +35,11 @@ void Sunflower::draw_petal(GLfloat angle, GLfloat dist, GLfloat height) {
   {
     glBegin(GL_POLYGON);
     glColor3f(1.0f, 1.0f, 0.0f);
-      glVertex3f(0.0f, 0.0f, 2.0f);
-      glVertex3f(10.0f, 0.0f, 4.0f);
-      glVertex3f(15.0f, 0.0f, 0.0f);
-      glVertex3f(10.0f, 0.0f, -4.0f);
-      glVertex3f(0.0f, 0.0f, -2.0f);
+    glVertex3f(0.0f, 0.0f, 2.0f);
+    glVertex3f(10.0f, 0.0f, 4.0f);
+    glVertex3f(15.0f, 0.0f, 0.0f);
+    glVertex3f(10.0f, 0.0f, -4.0f);
+    glVertex3f(0.0f, 0.0f, -2.0f);
     glEnd();
   }
   glPopMatrix();
@@ -67,11 +59,9 @@ void Sunflower::draw_flower_core(GLfloat dist, GLfloat height) {
     glBegin(GL_POLYGON);
     glVertex3f(0.0f, 0.0f, -2.0f);
     glVertex3f((dist + 0.5f) * cos(deg_to_rad(i * 360.0f / parts)),
-               (dist + 0.5f) * sin(deg_to_rad(i * 360.0f / parts)),
-                0.04);
+               (dist + 0.5f) * sin(deg_to_rad(i * 360.0f / parts)), 0.04);
     glVertex3f((dist + 0.5f) * cos(deg_to_rad((i + 1) * 360.0f / parts)),
-               (dist + 0.5f) * sin(deg_to_rad((i + 1) * 360.0f / parts)),
-                0.0f);
+               (dist + 0.5f) * sin(deg_to_rad((i + 1) * 360.0f / parts)), 0.0f);
     glEnd();
   }
   glPopMatrix();
