@@ -1,0 +1,144 @@
+#include "Bird.hpp"
+#include <GL/gl.h>
+
+Bird::Bird() : angle(0) {}
+Bird::Bird(Camera *ref_camera) : angle(45), camera(ref_camera) {}
+
+Bird::~Bird() {}
+void Bird::draw_wing() {
+  glNormal3f(1.0f, 0.0f, 1.0f);
+  glEnable(GL_COLOR_MATERIAL);
+  glEnable(GL_COLOR_MATERIAL_FACE);
+
+  glPushMatrix();
+  // Coloca a flor no local correto
+  glTranslated((camera->get_xtarget() + 4 * camera->get_xcamera()) / 5, 130,
+               (camera->get_ztarget() + 4 * camera->get_zcamera()) / 5);
+
+  glRotated(camera->get_angle(), 0.0f, 1.0f, 0.0f);
+
+  glRotated(deg_to_rad(angle), 0.0, 1.0, 1.0);
+  glScaled(-1.0f, 1.0f, -1.0f);
+  {
+    glBegin(GL_QUADS);
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glVertex3f(-2.0f, 0.0f, 0.0f);
+    glVertex3f(-8.0f, 0.0f, 0.0f);
+    glVertex3f(-8.0f, 3.0f, -7.0f);
+    glVertex3f(-2.0f, 3.0f, -7.0f);
+    glEnd();
+  }
+  {
+    glBegin(GL_TRIANGLES);
+    glVertex3f(-8.0f, 0.0f, 0.0f);
+    glVertex3f(-8.0f, 3.0f, -7.0f);
+    glVertex3f(-20.0f, -3.0f, 3.0f);
+    glEnd();
+  }
+  {
+    glBegin(GL_QUADS);
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glVertex3f(2.0f, 0.0f, 0.0f);
+    glVertex3f(8.0f, 0.0f, 0.0f);
+    glVertex3f(8.0f, 3.0f, -7.0f);
+    glVertex3f(2.0f, 3.0f, -7.0f);
+    glEnd();
+  }
+  {
+    glBegin(GL_TRIANGLES);
+    glVertex3f(8.0f, 0.0f, 0.0f);
+    glVertex3f(8.0f, 3.0f, -7.0f);
+    glVertex3f(20.0f, -3.0f, 3.0f);
+    glEnd();
+  }
+  glPopMatrix();
+}
+void Bird::draw_body() {
+  glNormal3f(1.0f, 0.0f, 1.0f);
+  glEnable(GL_COLOR_MATERIAL);
+  glEnable(GL_COLOR_MATERIAL_FACE);
+
+  glPushMatrix();
+  // Coloca a flor no local correto
+  glTranslated((camera->get_xtarget() + 4 * camera->get_xcamera()) / 5, 130,
+               (camera->get_ztarget() + 4 * camera->get_zcamera()) / 5);
+  // Coloca a petala na posicao correta em volta da flor
+  // Rotaciona para ficar ortogonal em relacao ao centro
+  glRotated(camera->get_angle(), 0.0, 1.0, 0.0);
+  glScaled(-1.0f, 1.0f, -1.0f);
+  {
+    glBegin(GL_TRIANGLES);
+    glColor3f(0.0f, 0.0f, 0.0f);
+    glVertex3f(0.0f, 0.0f, 7.0f);
+    glVertex3f(-2.0f, 0.0f, 0.0f);
+    glVertex3f(0.0f, 2.0f, 0.0f);
+
+    glVertex3f(0.0f, 0.0f, 7.0f);
+    glVertex3f(2.0f, 0.0f, 0.0f);
+    glVertex3f(0.0f, 2.0f, 0.0f);
+
+    glVertex3f(0.0f, 0.0f, 7.0f);
+    glVertex3f(2.0f, 0.0f, 0.0f);
+    glVertex3f(-2.0f, 0.0f, 0.0f);
+    glEnd();
+
+    glBegin(GL_QUAD_STRIP);
+    glVertex3f(0.0f, 2.0f, 0.0f);
+    glVertex3f(0.0f, 5.0f, -7.0f);
+    glVertex3f(-2.0f, 0.0f, 0.0f);
+    glVertex3f(-2.0f, 3.0f, -7.0f);
+    glVertex3f(2.0f, 0.0f, 0.0f);
+    glVertex3f(2.0f, 3.0f, -7.0f);
+    glVertex3f(0.0f, 2.0f, 0.0f);
+    glVertex3f(0.0f, 5.0f, -7.0f);
+    glEnd();
+
+    glBegin(GL_QUAD_STRIP);
+    glVertex3f(0.0f, 5.0f, -7.0f);
+    glVertex3f(0.0f, 5.0f, -10.0f);
+    glVertex3f(2.0f, 3.0f, -7.0f);
+    glVertex3f(2.0f, 3.0f, -10.0f);
+    glVertex3f(-2.0f, 3.0f, -7.0f);
+    glVertex3f(-2.0f, 3.0f, -10.0f);
+    glVertex3f(0.0f, 5.0f, -7.0f);
+    glVertex3f(0.0f, 5.0f, -10.0f);
+    glEnd();
+
+    glBegin(GL_TRIANGLES);
+    glColor3f(1.0f, 0.5f, 0.0f);
+    glVertex3f(0.0f, 5.0f, -10.0f);
+    glVertex3f(-2.0f, 3.0f, -10.0f);
+    glVertex3f(0.0f, 5.0f, -15.0f);
+
+    glVertex3f(0.0f, 5.0f, -10.0f);
+    glVertex3f(2.0f, 3.0f, -10.0f);
+    glVertex3f(0.0f, 5.0f, -15.0f);
+
+    glVertex3f(-2.0f, 3.0f, -10.0f);
+    glVertex3f(2.0f, 3.0f, -10.0f);
+    glVertex3f(0.0f, 5.0f, -15.0f);
+
+    glEnd();
+  }
+  glPopMatrix();
+}
+
+void Bird::draw_bird() {
+  draw_body();
+  draw_wing();
+}
+
+void Bird::flap() {
+  if (direction == 1) {
+    angle++;
+  } else {
+    angle--;
+  }
+
+  if (angle >= 45) {
+    direction = -1;
+  }
+  if (angle <= 0) {
+    direction = +1;
+  }
+}

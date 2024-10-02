@@ -35,4 +35,8 @@ public:
   void rotate_left();
   void look_up();
   void look_down();
+  void move_up();
+  void move_down();
+
+  inline int get_angle() { return angle; }
 };

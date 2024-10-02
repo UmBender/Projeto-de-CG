@@ -4,6 +4,9 @@ Sunflower::Sunflower(GLfloat x, GLfloat y, GLfloat z) : Flower(x, y, z) {}
 Sunflower::~Sunflower() {}
 
 void Sunflower::draw_flower() {
+  glEnable(GL_COLOR_MATERIAL);
+  glEnable(GL_COLOR_MATERIAL_FACE);
+
   GLfloat Px, Py, Pz;
 
   // Pontos de controle
