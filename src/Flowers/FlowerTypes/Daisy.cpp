@@ -1,22 +1,26 @@
 #include "Daisy.hpp"
 #include <GL/gl.h>
 
-Daisy::Daisy() : Flower() {
+Daisy::Daisy() : Flower(), height(10.0f) {
   Bx = {0, 2.0f, 0, -4.0f};
   By = {0, 0 + 3.3f, 0 + 6.7f, 10.0f};
   Bz = {0, 0, 0, 0};
 }
 Daisy::Daisy(GLfloat x, GLfloat y, GLfloat z, GLfloat height)
     : Flower(x, y, z), height(height) {
-  Bx = {0, randf(-5.0f, 5.0f), randf(-5.0f, 5.0f), 0};
-  By = {0, height / 3.0f, 2.0f * height / 3.0f, height};
-  Bz = {0, randf(-5.0f, 5.0f), randf(-5.0f, 5.0f), 0};
+  Bx = {0.0f, randf(-5.0f, 5.0f), randf(-5.0f, 5.0f), 0.0f};
+  By = {0.0f, height / 3.0f, 2.0f * height / 3.0f, height};
+  Bz = {0.0f, randf(-5.0f, 5.0f), randf(-5.0f, 5.0f), 0.0f};
 }
 Daisy::~Daisy() {}
 void Daisy::draw_flower() {
-  float n{360.0f};
-  float radius{7.0f};
-  for (float i{0}; i < n; i += 20) {
+  glNormal3f(1.0f, 0.0f, 1.0f);
+  glEnable(GL_COLOR_MATERIAL);
+  glEnable(GL_COLOR_MATERIAL_FACE);
+
+  GLfloat n{360.0f};
+  GLfloat radius{7.0f};
+  for (GLfloat i{0.0f}; i < n; i += 20.0f) {
     draw_petal(i, radius, height);
   }
   draw_flower_core(radius, height);
@@ -72,7 +76,7 @@ void Daisy::draw_stem() {
   glPushMatrix();
   glTranslatef(root_x_position, root_y_position, root_z_position);
   for (float t{0.02f}; t <= 1.0f; t += 0.02f) {
-    glColor3f(0.0f, 1.0f, 0.0f);
+    glColor3f(0.0f, 0.4f, 0.0f);
     glBegin(GL_QUAD_STRIP);
     // Pontos de cima
     GLfloat px = calculate_point(Bx, t);

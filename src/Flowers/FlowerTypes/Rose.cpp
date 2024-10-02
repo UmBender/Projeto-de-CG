@@ -12,6 +12,9 @@ Rose::Rose(GLfloat x, GLfloat y, GLfloat z, GLfloat height)
 }
 Rose::~Rose() {}
 void Rose::draw_flower() {
+  glEnable(GL_COLOR_MATERIAL);
+  glEnable(GL_COLOR_MATERIAL_FACE);
+
   float n{360.0f};
   float radius{5.0f};
   for (GLfloat j{0.0f}; j <= 45.0f; j += 11.25f) {
@@ -36,6 +39,7 @@ void Rose::draw_petal(GLfloat angle, GLfloat dist, GLfloat vertical_angle) {
   GLfloat scale = cos(deg_to_rad(vertical_angle));
   glScaled(scale, scale, scale);
   {
+    glNormal3f(0.0f, 0.0f, 1.0f);
     glBegin(GL_POLYGON);
     glColor3f(1.0f, 0.0f, 0.0f);
     glVertex3f(0.0f, 0.0f, 10.0f);
@@ -62,6 +66,8 @@ void Rose::draw_flower_core(GLfloat dist) {
 
   for (int i{0}; i < parts; i++) {
     glBegin(GL_POLYGON);
+
+    glNormal3f(0.0f, 0.0f, 1.0f);
     glVertex3f(0.0f, 4.0f, 0.0f);
     glVertex3f((dist + 2.0f) * cos(deg_to_rad(i * 360.0f / parts)), 0.0f,
                (dist + 2.0f) * sin(deg_to_rad(i * 360.0f / parts)));
@@ -75,7 +81,8 @@ void Rose::draw_stem() {
   glPushMatrix();
   glTranslatef(root_x_position, root_y_position, root_z_position);
   for (float t{0.02f}; t <= 1.0f; t += 0.02f) {
-    glColor3f(0.0f, 0.6f, 0.0f);
+    glColor3f(0.0f, 0.3f, 0.0f);
+    glNormal3f(0.0f, -1.0f, 0.0f);
     glBegin(GL_QUAD_STRIP);
     // Pontos de cima
     GLfloat px = calculate_point(Bx, t);
@@ -88,6 +95,7 @@ void Rose::draw_stem() {
 
     // Desenha a caula de forma circular
     for (float i{0.0f}; i <= 360.0f; i += 22.5f) {
+      glNormal3f(-1.0f, 0.0f, 0.0f);
       // Define os pontos de cima
       glVertex3f(px + cos(deg_to_rad(i)), py, pz + sin(deg_to_rad(i)));
       // Define os pontos de baixo
@@ -108,6 +116,7 @@ void Rose::draw_stem() {
 }
 
 void Rose::draw_leaf() {
+
   glPushMatrix();
   // Coloca o centro da flor no centro da flor
   glTranslated(root_x_position, root_y_position, root_z_position);

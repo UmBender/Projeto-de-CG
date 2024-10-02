@@ -38,3 +38,15 @@ void Camera::rotate_rigth() { angle -= 5; }
 void Camera::rotate_left() { angle += 5; }
 void Camera::look_up() { ytarget += 10; }
 void Camera::look_down() { ytarget -= 10; }
+void Camera::move_up() {
+  if (ycamera < 3100) {
+    ytarget += 10;
+    ycamera += 10;
+  }
+}
+void Camera::move_down() {
+  if (ycamera > 50) {
+    ytarget -= 10;
+    ycamera -= 10;
+  }
+}

@@ -1,3 +1,4 @@
+#include "Bird.hpp"
 #include "Flowers/Flower.hpp"
 #include "Flowers/Seeder.hpp"
 #include "World/Camera.hpp"
@@ -17,6 +18,7 @@ Controller controller;
 Camera camera;
 Seeder seeder;
 std::vector<Flower *> flowers;
+Bird bird;
 
 void Desenha(void) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -25,6 +27,7 @@ void Desenha(void) {
   world.draw_floor();
   world.draw_sky();
   world.draw_sun();
+  bird.draw_bird();
 
   for (Flower *i : flowers) {
     i->draw_flower();
@@ -35,60 +38,25 @@ void Desenha(void) {
 
 void Inicializa(void) {
 
-  GLfloat luzAmbiente[4] = {0.2, 0.2, 0.2, 1.0}; // {R, G, B, alfa}
-  GLfloat luzDifusa[4] = {
-      0.5, 0.5, 0.5,
-      1.0}; // o 4o componente, alfa, controla a opacidade/transparência da luz
-  GLfloat luzEspecular[4] = {1.0, 1.0, 1.0, 1.0};
-  GLfloat posicaoLuz[4] = {200.0, 200.0, 100.0,
-                           1.0}; // aqui o 4o componente indica o tipo de fonte:
-                                 // 0 para luz direcional (no infinito) e 1 para
-                                 // luz pontual (em x, y, z)
-  GLfloat posicaoLuz2[4] = {-200.0, 200.0, 100.0, 1.0};
+  GLfloat luzAmbiente[4] = {0.5, 0.5, 0.5, 1.0};
+  GLfloat luzDifusa[4] = {0.9, 0.9, 0.9, 1.0};
+  GLfloat luzEspecular[4] = {0.9, 0.9, 0.9, 1.0};
+  GLfloat posicaoLuz[4] = {0.0, 4000.0, 0.0, 0.0};
 
-  // Capacidade de brilho do material
-  GLfloat especularidade[4] = {1.0, 1.0, 1.0, 1.0};
-  GLint especMaterial = 100; // 0 a 128
-  //
-
-  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-  glShadeModel(GL_SMOOTH); // modelo de GOURAUD: a cor de cada ponto da
-  // primitiva é interpolada a partir dos vértices
-  // glShadeModel(GL_FLAT); // a cor de cada primitiva é única em todos os
-  // pontos
-
-  // Define a refletância do material
-  glMaterialfv(GL_FRONT, GL_SPECULAR, especularidade);
-  // Define a concentração do brilho
-  glMateriali(GL_FRONT, GL_SHININESS, especMaterial);
-  // Define a emissão de luz pelo objeto
-  // glMaterialfv(GL_FRONT, GL_EMISSION, emissao);
-
-  // Ativa o uso da luz ambiente
-  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente);
-
-  // Define os parâmetros da luz de número 0
+  glShadeModel(GL_SMOOTH);
   glLightfv(GL_LIGHT0, GL_AMBIENT, luzAmbiente);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, luzDifusa);
   glLightfv(GL_LIGHT0, GL_SPECULAR, luzEspecular);
   glLightfv(GL_LIGHT0, GL_POSITION, posicaoLuz);
 
-  glLightfv(GL_LIGHT1, GL_AMBIENT, luzAmbiente);
-  glLightfv(GL_LIGHT1, GL_DIFFUSE, luzDifusa);
-  glLightfv(GL_LIGHT1, GL_SPECULAR, luzEspecular);
-  glLightfv(GL_LIGHT1, GL_POSITION, posicaoLuz2);
-
-  // Habilita a definição da cor do material a partir da cor corrente
   glEnable(GL_COLOR_MATERIAL);
-  // Habilita o uso de iluminação
+  glEnable(GL_COLOR_MATERIAL_FACE);
   glEnable(GL_LIGHTING);
-  // Habilita a luz de número 0
   glEnable(GL_LIGHT0);
-  // Habilita o depth-buffering
+  glEnable(GL_DEPTH_TEST);
 
-  glEnable(GL_DEPTH_TEST);                            // ativa o zBuffer
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // aplica o zBuffer
-
+  glClearColor(0, 0, 0, 1);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   angle = 90;
 }
 
@@ -165,15 +133,31 @@ void GerenciaTeclado(unsigned char key, int, int) {
   case ' ':
     flowers.push_back(seeder.generate_flower());
     break;
+  case 'w':
+    camera.move_up();
+    break;
+  case 's':
+    camera.move_down();
+    break;
   }
+
   EspecificaParametrosVisualizacao();
   glutPostRedisplay();
+}
+
+void ControleTempo(int value) {
+
+  // Redesenha a cena e executa o timer novamente para ter uma animacao continua
+  bird.flap();
+  glutPostRedisplay();
+  glutTimerFunc(100, ControleTempo, 1);
 }
 
 int main(int argc, char **argv) {
   camera = Camera();
   seeder = Seeder(&camera);
   world = World();
+  bird = Bird(&camera);
 
   glutInit(&argc, argv);
 
@@ -187,6 +171,9 @@ int main(int argc, char **argv) {
   glutInitWindowSize(largura, altura);
   fAspect = (GLfloat)largura / (GLfloat)altura;
   glutCreateWindow("Projeto Jardim");
+
+  glutTimerFunc(100, ControleTempo,
+                1); // registra a função callback para temporizador
 
   glutDisplayFunc(Desenha);
   glutReshapeFunc(AlteraTamanhoJanela); // Função para ajustar o tamanho da tela

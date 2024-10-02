@@ -14,6 +14,7 @@ Sunflower::Sunflower(GLfloat x, GLfloat y, GLfloat z, GLfloat height)
 }
 Sunflower::~Sunflower() {}
 void Sunflower::draw_flower() {
+<<<<<<< HEAD
   float n{360.0f};
   float radius{7.0f};
   for (float i{0}; i < n; i += 10) {
@@ -22,6 +23,12 @@ void Sunflower::draw_flower() {
   draw_flower_core(radius, height);
   draw_stem();
 }
+=======
+  glEnable(GL_COLOR_MATERIAL);
+  glEnable(GL_COLOR_MATERIAL_FACE);
+
+  GLfloat Px, Py, Pz;
+>>>>>>> 993bfa0 (feat: versao final com iluminacao, passaro animado e movimentacao)
 
 void Sunflower::draw_petal(GLfloat angle, GLfloat dist, GLfloat height) {
   glPushMatrix();
