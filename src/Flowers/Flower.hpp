@@ -17,6 +17,7 @@ public:
     int random_value = rand() % 1000;
     return (random_value / 1000.0f) * (max - min) + min;
   }
+  void update_animation() {};
 
 protected:
   GLfloat root_x_position, root_y_position, root_z_position;

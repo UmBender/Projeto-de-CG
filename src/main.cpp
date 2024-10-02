@@ -18,6 +18,18 @@ Camera camera;
 Seeder seeder;
 std::vector<Flower *> flowers;
 
+void Atualiza(int value) {
+    for (Flower* i : flowers) {
+        i->update_animation();  // Função que atualiza a posição/estado da abelha
+    }
+    
+    // Redesenhar a cena
+    glutPostRedisplay();
+    
+    // Chama novamente a função após 16 ms (~60 FPS)
+    glutTimerFunc(16, Atualiza, 0);
+}
+
 void Desenha(void) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -196,5 +208,9 @@ int main(int argc, char **argv) {
   glutSpecialFunc(TeclasEspeciais); // Define qual
                                     // funcao gerencia as teclas especiais
   Inicializa();
+
+  // Inicia o timer para atualização contínua da animação
+  glutTimerFunc(16, Atualiza, 0);
+
   glutMainLoop();
 }

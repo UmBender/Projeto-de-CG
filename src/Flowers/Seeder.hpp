@@ -4,6 +4,7 @@
 #include "FlowerTypes/Daisy.hpp"
 #include "FlowerTypes/Rose.hpp"
 #include "FlowerTypes/Sunflower.hpp"
+#include "FlowerTypes/Bee.hpp"
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <map>

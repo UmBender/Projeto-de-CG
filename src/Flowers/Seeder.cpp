@@ -6,7 +6,7 @@ Seeder::Seeder(Camera *ref_camera)
 
 Flower *Seeder::generate_flower() {
   std::uniform_int_distribution<std::mt19937::result_type> random_flower_dist(
-      1, 3);
+      1, 4);
   number_flowers++;
 
   switch (random_flower_dist(random_generator)) {
@@ -24,6 +24,10 @@ Flower *Seeder::generate_flower() {
     flowers_distribution["Rose"]++;
     return new Rose(camera->get_xcamera(), 0.0F, camera->get_zcamera(),
                     Flower::randf(15.0f, 100.0f));
+    break;
+  case 4:
+    flowers_distribution["Bee"]++;
+    return new Bee(camera->get_xcamera(), 0.0F, camera->get_zcamera());
     break;
   }
   return nullptr;
